@@ -1,28 +1,36 @@
 #!/bin/bash
+
+function NOW ()
+{
+        NOW=$(date "+%F | %T -")
+}
 function argsCheck(){
-	if [[ $imcl_path != '' ]] || [[ $was_install_dir != '' ]] || [[ $package != '' ]]|| [[ $version != '' ]] || [[ $repository != '' ]] || [[ $user != '' ]] || [[ $group != '' ]]; then
-        	        echo "Check the passed Arguments to the script None of the following values should be empty"
-                	echo "imcl_path=$imcl_path Arg was_install_dir=$was_install_dir 2Arg package=$packag 3Arg version=$version 4Arg repository=$repository 5Arg user=$user 6Arg group=$group 7Arg"
+	NOW
+	if [[ $imcl_path == '' ]] || [[ $was_install_dir == '' ]] || [[ $package == '' ]]|| [[ $version == '' ]] || [[ $repository == '' ]] || [[ $user == '' ]] || [[ $group == '' ]]; then
+			NOW
+        	        echo "$NOW Check the passed Arguments to the script None of the following values should be empty"
+                	echo "$NOW imcl_path=$imcl_path Arg was_install_dir=$was_install_dir 2Arg package=$packag 3Arg version=$version 4Arg repository=$repository 5Arg user=$user 6Arg group=$group 7Arg"
        			exit 1
 	 else
-         	       echo "Arguments Passed to the script are imcl_path=$imcl1Arg was_install_dir=$was_install_dir 2Arg package=$packag 3Arg version=$version 4Arg repository=$repository 5Arg user=$user 6Arg group=$group 7Arg "
+         	       echo "$NOW Arguments Passed to the script are imcl_path=$imcl_pathArg was_install_dir=$was_install_dir 2Arg package=$packag 3Arg version=$version 4Arg repository=$repository 5Arg user=$user 6Arg group=$group 7Arg "
 
-                	echo "Starting Installation Process"
+                	echo "$NOW Starting Installation Process"
 	fi
 }
 function verify (){
-       if [[ -d $imcl_path ]] ;then
-		echo "Imcl (Installation Manager install location) path $imcl provided"
+        NOW
+	if [[ -d $imcl_path ]] ;then
+		echo "$NOW Imcl (Installation Manager install location) path $imcl provided"
 	else
-		echo "Failed Instalaltion Manager $imcl_path not existed on the system"
+		echo "$NOW Failed Instalaltion Manager $imcl_path not existed on the system"
 	fi
         if [[ -d $was_install_dir ]] ;then
                echo "$was_install_dir  Exist On The System  installation"
          else
-               echo "Provided Path Not exist on the system $was_install_dir"
+               echo "Provided Path Not exist on the system $was_install_dir Creating the directory"
 	       mkdir "$was_install_dir"
 	fi
-	if [[ `id $user` ]] && [[`grep $group /etc/group`]];then
+	if [[ `id $user` ]] && [[ `grep $group /etc/group` ]];then
 	   echo "Installation perfomed using  $user and $group "
 	else
 	   echo "Failed  user $user and group $group not exist on the system"
@@ -30,6 +38,7 @@ function verify (){
 	fi
 }
 function getFiles(){
+	NOW
 	user_home=`eval  echo ~$user`
 if [[ -f '/var/ibm/InstallationManager/installed.xml' ]]; then
         installed_file='/var/ibm/InstallationManager/installed.xml'
@@ -40,29 +49,33 @@ elif [[ -f "$user_home/var/ibm/InstallationManager/installed.xml" ]]; then
 fi
 }
 function imcl(){
-
+	NOW
 	imcl_data=`grep "location id='IBM Installation Manager'" ${installed_file}`     
         imcl_path=$(echo $imcl_data | awk -F "path" {'print $2'} | awk -F "=" {'print $2'} | awk -F ">" {'print $1'}| awk -F "'" {'print $2'})
         imcl_command_path="$imcl_path/tools/imcl"
+	echo "$NOW $imcl_command_path ${options}"
 	if [[ -f $imcl_command_path ]]; then
         	command="${imcl_command_path} ${options}"
-       		if [[$user != root ]];then
+       		if [[ $user == root ]];then
 		result=$(su -c "${command}")
 		else
 	 		result=$(${command})
 			echo $result
 		fi
 	else
-		echo "$imcl_command_path Not Exist"
+		echo "$NOW $imcl_command_path Not Exist"
 	fi
 }
 function stopProc()
 {
+	NOW
 	if [[ -d $was_install_dir ]];then
-		stopJava=$(ps -ef | grep "$was_install_dir" | grep -v "grep" | awk {'print $2'})
-		echo $stopJava
-	#	cmd_kill=$(kill -9 $stopJava)
-		echo $cmd_kill
+		stopJava=$(ps -ef | grep java |grep "$was_install_dir" | grep -v "grep" | awk {'print $2'})
+		echo " $NOW Stopping Necessary Java Process $stopJava"
+		if [[ $stopJava != '' ]]; then
+			cmd_kill=$(kill -9 $stopJava)
+			echo $cmd_kill
+		fi
 	fi
 }
 function wasInstall() 
@@ -72,7 +85,7 @@ function wasInstall()
 		options="$response_file"
 	 else 
 		options="install ${package}_${version}"
-		options+=" repositories $repository -installationDriectory $was_install_dir" 
+		options+=" -repositories $repository -installationDirectory $was_install_dir" 
 	 fi
 	 options+=" -acceptLicense"
 	 if [[ $args_options != '' ]];then
@@ -81,18 +94,19 @@ function wasInstall()
 	stopProc
 	imcl
 }
+NOW
 echo "starting "
 if [[ $# -eq 1 ]] && [[ -f $1 ]]; then
 	response_file=$1
 	if [[  -f $response_file ]]; then
-		echo "Reading Property File"
+		echo " $NOW Reading Property File"
 		source $response_file 
 	else 
-		echo "Reponse File is missing $response_file not exist on the system"
+		echo "$NOW Reponse File is missing $response_file not exist on the system"
 	fi
 	argsCheck
 elif [[ $# -gt 1  ]] && [[ $# -ge 7 ]] && [[ $# -le 8 ]]; then
-	echo "entered"
+	echo " $NOW Starting Script execution "
 	imcl_path=$1
 	was_install_dir=$2
 	package=$3
@@ -101,15 +115,14 @@ elif [[ $# -gt 1  ]] && [[ $# -ge 7 ]] && [[ $# -le 8 ]]; then
 	user=$6
 	group=$7
 	args_options=$8
-	echo "geting files"
 	argsCheck
 	verify
 	getFiles
-	#wasInstall
+	wasInstall
 else
-	echo "	Usage:$0 reponseFile		"
+	echo " $NOW	Usage:$0 reponseFile		"
 	echo "=========or======================="
-	echo "Usage:$0 imcl_path was_install_dir package version repository user group options(OPTIONAL Argument)"
+	echo " $NOW Usage:$0 imcl_path was_install_dir package version repository user group options(OPTIONAL Argument)"
 fi
 
 
