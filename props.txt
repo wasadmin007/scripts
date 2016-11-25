@@ -1,0 +1,8 @@
+#####
+####
+source_dir=/opt/IBM/tmp/InstallationManager
+im_install_loc=/opt/IBM/InstallationManager
+user=was_admin
+uid=1001
+group=was_admin
+gid=1002
