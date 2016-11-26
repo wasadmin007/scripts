@@ -6,12 +6,21 @@ function NOW ()
 }
 function verifyPackage()
 {
-	installed_data=$(grep "" $registry_file)
+	existing_installed_data=$(grep "$package" $registry_file |  awk -F "id=" {'print $2'} | awk -F ">" {'print $1'} | awk -F "'" {'print $2'})
+	existing_version_data=$(grep "$version" $registry_file | awk -F "value='" {'print $2'} | awk -F "' repoInfo=" {'print $1'})
+        existing_repo_file=$(grep "$version" $registry_file | awk -F 'Name=' {'print $2'} | awk -F "," {'print $1'})
+	NOW
+	echo "$NOW ${existing_installed_data}_${existing_version_data}_${existing_repo_file}"
+	NOW
+	if [[ "${existing_installed_data}_${existing_version_data}_${existing_repo_file}" == "${package}_${version}_${repository}" ]];then
+		echo "$NOW package is already installed ${package}_${version}_${repository}"	
+		exit 0
+	fi
 }
+
 function uninstall_was(){
     options="uninstall ${package}_${version} -s -installationDirectory $was_install_dir"
     imcl
-    rm -rf $was_install_dir
 }
 function argsCheck(){
 	NOW
@@ -113,14 +122,8 @@ if [[ $# -eq 1 ]] && [[ -f $1 ]]; then
 	else 
 		echo "$NOW Reponse File is missing $response_file not exist on the system"
 	fi
-	argsCheck
-	verify
 	getFiles
-	if [[ $install == install ]]; then
-                wasInstall
-        elif [[ $uninstall == uninstall ]]; then
-                uninstall_was
-        fi
+        wasInstall
 elif [[ $# -gt 1  ]] && [[ $# -ge 8 ]] && [[ $# -le 9 ]]; then
 	echo " $NOW Starting Script execution "
 	imcl_path=$1
@@ -136,6 +139,7 @@ elif [[ $# -gt 1  ]] && [[ $# -ge 8 ]] && [[ $# -le 9 ]]; then
 	verify
 	getFiles
 	if [[ $install == install ]]; then
+	 	verifyPackage
 		wasInstall
 	elif [[ $install == uninstall ]]; then
 		uninstall_was		
