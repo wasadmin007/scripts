@@ -4,12 +4,21 @@ function NOW ()
 {
         NOW=$(date "+%F | %T -")
 }
+function verifyPackage()
+{
+	installed_data=$(grep "" $registry_file)
+}
+function uninstall_was(){
+    options="uninstall ${package}_${version} -s -installationDirectory $was_install_dir"
+    imcl
+    rm -rf $was_install_dir
+}
 function argsCheck(){
 	NOW
-	if [[ $imcl_path == '' ]] || [[ $was_install_dir == '' ]] || [[ $package == '' ]]|| [[ $version == '' ]] || [[ $repository == '' ]] || [[ $user == '' ]] || [[ $group == '' ]]; then
+	if [[ $imcl_path == '' ]] || [[ $was_install_dir == '' ]] || [[ $package == '' ]]|| [[ $version == '' ]] || [[ $repository == '' ]] || [[ $user == '' ]] || [[ $group == '' ]] || [[ $install == '' ]]; then
 			NOW
         	        echo "$NOW Check the passed Arguments to the script None of the following values should be empty"
-                	echo "$NOW imcl_path=$imcl_path Arg was_install_dir=$was_install_dir 2Arg package=$packag 3Arg version=$version 4Arg repository=$repository 5Arg user=$user 6Arg group=$group 7Arg"
+                	echo "$NOW imcl_path=$imcl_path Arg was_install_dir=$was_install_dir 2Arg package=$packag 3Arg version=$version 4Arg repository=$repository 5Arg user=$user 6Arg group=$group 7Arg install=$install 8Arg"
        			exit 1
 	 else
          	       echo "$NOW Arguments Passed to the script are imcl_path=$imcl_pathArg was_install_dir=$was_install_dir 2Arg package=$packag 3Arg version=$version 4Arg repository=$repository 5Arg user=$user 6Arg group=$group 7Arg "
@@ -25,7 +34,7 @@ function verify (){
 		echo "$NOW Failed Instalaltion Manager $imcl_path not existed on the system"
 	fi
         if [[ -d $was_install_dir ]] ;then
-               echo "$was_install_dir  Exist On The System  installation"
+               echo "$was_install_dir  Exist On The System "
          else
                echo "Provided Path Not exist on the system $was_install_dir Creating the directory"
 	       mkdir "$was_install_dir"
@@ -105,7 +114,14 @@ if [[ $# -eq 1 ]] && [[ -f $1 ]]; then
 		echo "$NOW Reponse File is missing $response_file not exist on the system"
 	fi
 	argsCheck
-elif [[ $# -gt 1  ]] && [[ $# -ge 7 ]] && [[ $# -le 8 ]]; then
+	verify
+	getFiles
+	if [[ $install == install ]]; then
+                wasInstall
+        elif [[ $uninstall == uninstall ]]; then
+                uninstall_was
+        fi
+elif [[ $# -gt 1  ]] && [[ $# -ge 8 ]] && [[ $# -le 9 ]]; then
 	echo " $NOW Starting Script execution "
 	imcl_path=$1
 	was_install_dir=$2
@@ -114,15 +130,20 @@ elif [[ $# -gt 1  ]] && [[ $# -ge 7 ]] && [[ $# -le 8 ]]; then
 	repository=$5
 	user=$6
 	group=$7
-	args_options=$8
+	install=$8
+	args_options=$9
 	argsCheck
 	verify
 	getFiles
-	wasInstall
+	if [[ $install == install ]]; then
+		wasInstall
+	elif [[ $install == uninstall ]]; then
+		uninstall_was		
+	fi	
 else
 	echo " $NOW	Usage:$0 reponseFile		"
 	echo "=========or======================="
-	echo " $NOW Usage:$0 imcl_path was_install_dir package version repository user group options(OPTIONAL Argument)"
+	echo " $NOW Usage:$0 imcl_path was_install_dir package version repository user group install options(OPTIONAL Argument)"
 fi
 
 
