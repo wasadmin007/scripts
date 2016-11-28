@@ -118,7 +118,6 @@ if [[ $# -eq 1 ]] && [[ -f $1 ]]; then
 	response_file=$1
 	if [[  -f $response_file ]]; then
 		echo " $NOW Reading Property File"
-		source $response_file 
 	else 
 		echo "$NOW Reponse File is missing $response_file not exist on the system"
 	fi
