@@ -41,37 +41,38 @@ def exist(scopeName,jdbcName,scopID) :
 #
 scopLevel = sys.argv[0]
 scopeName = sys.argv[1]
-if scopLevel == 'Node' :
-   node = scopeName
-   scope = 'Node='+scopeName
-   scopeID = AdminConfig.getid('/Node:'+node+'/')
-elif scopLevel == 'Cluster' :
-   scope = 'Cluster='+scopeName
-   cluster = scopeName
-   scopeID  =  AdminConfig.getid('/ServerCluster:'+cluster+'/')
-elif scopLevel == 'Cell' :
-   scope = 'Cell='+scopeName 
-   cell = scopeName
-   scopeID  =  AdminConfig.getid('/Cell:'+cell+'/')
-dict = {
-       		'databaseType'   :  'DB2',
+jdbcName =  sys.argv[1]
+if len(sys.argv[0:]) == 3:
+	if scopLevel == 'Node' :
+   		node = scopeName
+   		scope = 'Node='+scopeName
+   		scopeID = AdminConfig.getid('/Node:'+node+'/')
+	elif scopLevel == 'Cluster' :
+   		scope = 'Cluster='+scopeName
+   		cluster = scopeName
+   		scopeID  =  AdminConfig.getid('/ServerCluster:'+cluster+'/')
+	elif scopLevel == 'Cell' :
+  		scope = 'Cell='+scopeName 
+   		cell = scopeName
+   		scopeID  =  AdminConfig.getid('/Cell:'+cell+'/')
+	dict  = {
+       	'databaseType'   :  'DB2',
 		'providerType'   : '"DB2 Universal JDBC Driver Provider"',
 		'implementationType'  : '"XA data source"',
 		'description' : '"Two-phase commit DB2 JCC provider that supports JDBC 3.0. Datasources that use this provider support the use of XA to perform 2-phase commit processing. Use of driver type 2 on the application server for z/OS is not supported for data sources created under this provider."',
-		'jdbcName' : '"PraveenTest DB2 Universal JDBC Driver Provider(XA)"',
+		'jdbcName' : jdbcName,
 		'classpath' : '[${DB2UNIVERSAL_JDBC_DRIVER_PATH}/db2jcc.jar ${UNIVERSAL_JDBC_DRIVER_PATH}/db2jcc_license_cu.jar  ${DB2UNIVERSAL_JDBC_DRIVER_PATH}/db2jcc_license_cisuz.jar ]',
-		'nativepath' : '[${DB2UNIVERSAL_JDBC_DRIVER_NATIVEPATH} ]',	    
-  }
-databaseType = dict['databaseType'] 
-providerType = dict['providerType']
-implementationType = dict['implementationType']
-description = dict['description']
-jdbcName = dict['jdbcName']
-classpath = dict['classpath']
-nativepath = dict['nativepath'] 
-if exist(scopeName,jdbcName,scopeID) == 'JDBC Resource With Specified Scope Already Exist' :
-	print 'JDBC Resource is already exist'
-else:
-	print 'starting Jdbc Creation'	
-	createJDBC(scope,databaseType=databaseType,providerType=providerType,implementationType=implementationType,description=description,jdbcName=jdbcName,classpath=classpath,nativepath=nativepath) 
+		'nativepath' : '[${DB2UNIVERSAL_JDBC_DRIVER_NATIVEPATH} ]',	 }
+	databaseType = dict['databaseType'] 
+	providerType = dict['providerType']
+	implementationType = dict['implementationType']
+	description = dict['description']
+	jdbcName = dict['jdbcName']
+	classpath = dict['classpath']
+	nativepath = dict['nativepath'] 
+	if exist(scopeName,jdbcName,scopeID) == 'JDBC Resource With Specified Scope Already Exist' :
+		print 'JDBC Resource is already exist'
+	else:
+		print 'starting Jdbc Creation'	
+		createJDBC(scope,databaseType=databaseType,providerType=providerType,implementationType=implementationType,description=description,jdbcName=jdbcName,classpath=classpath,nativepath=nativepath) 
 
