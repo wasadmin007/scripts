@@ -1,6 +1,3 @@
 
-props=$1
-
-echo $props
-
-echo $#
+user=was_admin
+eval echo ~$user
