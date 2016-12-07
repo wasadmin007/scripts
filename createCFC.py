@@ -1,5 +1,7 @@
 import os
 import sys
+#Usage
+#/usr/WebSphere8/AppServer/profiles/dmgr/bin/wsadmin.sh -lang jython -user femadmin -password 27f3m13 -f createCFC.py cell=cell Cluster=cluster1 CFName=sdfs QMName=abc CFJNDI=sfsd qmgrHost=feprafd1 qmgrPort=1414
 def createCF(CFName, QMName, qmgrSvrConnChan='', CFJNDI=''):    
     if CFJNDI:
         CFJNDI = 'jndi/'+CFName
@@ -31,30 +33,30 @@ args = sys.argv[0:]
 if len(args) >= 4 :
     for arg in args:
         key, value = arg.split('=')
-        if  key == 'cell':
+        if  key.lower == 'cell':
             CellScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'|resources.xml#builtin_mqprovider)"'
-        if  key == 'Cluster':
+        if  key.lower == 'cluster':
             ClusScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'/clusters/'+ClusScope+'|resources.xml#builtin_mqprovider)"'
-        if  key == 'Node':
+        if  key.lower == 'node':
             NodeScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'/nodes/'+Nodescope+'|resources.xml#builtin_mqprovider)"'
-        if  key == 'CFName':
+        if  key.lower == 'cfName':
             CFName = value
-        if  key == 'QMName':
+        if  key.lower == 'qmname':
             QMName = value
-        if  key == 'CFJNDI':
+        if  key.lower == 'cfjndi':
             CFJNDI = value
-        if  key == 'qmgrSvrConnChan':
-            qmgrSvrConnChan = value
-        if  key == 'qmgrHost':
+        if  key.lower == 'qmgrsvrconnchan':
+            qmgrsvrconnchan = value
+        if  key.lower == 'qmgrhost':
             qmgrHost = value
-        if  key ==  'qmgrPort':
+        if  key.lower ==  'qmgrport':
             qmgrPortNumber = value
-        if  key == 'ConnNameList':
+        if  key.lower == 'connnamelist':
             ConnNameList = value
-        if  key == 'ClChanDefTabURL':
+        if  key.lower == 'clchandeftaburl':
             ClChanDefTabURL = value
     if CFName or QMName  or CellScope or qmgrHost:
         print CellScope,ClusScope,CFName,QMName,CFJNDI,qmgrHost
