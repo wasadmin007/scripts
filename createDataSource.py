@@ -49,7 +49,7 @@ def exist(jdbcProviderID,dsName):
              data = dataSource.split('#')[0]
              if data == pat :
                 print dataSource
-                return 'there'
+                return 'True'
 
 #
 def createDataSource(jdbcProviderID ,dsName ,dsJNDI ,  aliasName ,dbtype ,dbName ,dbPort ,dbHost):
@@ -96,7 +96,7 @@ elif len(sys.argv[0:])>1 and len(sys.argv[0:])<8:
     dbName = DATABASE_NAME
     dbPort = DATABASE_PORT
     dbHost = DATABASE_SERVER 
-    if 'there' != exist(jdbcProviderID ,dsName):
+    if 'True' != exist(jdbcProviderID ,dsName):
           dataSource =  createDataSource(jdbcProviderID ,dsName ,dsJNDI ,  aliasName ,dbtype ,dbName ,dbPort ,dbHost)
     else:
           print "Data Source Already exist      "
