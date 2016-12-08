@@ -33,30 +33,30 @@ args = sys.argv[0:]
 if len(args) >= 4 :
     for arg in args:
         key, value = arg.split('=')
-        if  key.lower == 'cell':
+        if  key.lower() == 'cell':
             CellScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'|resources.xml#builtin_mqprovider)"'
-        if  key.lower == 'cluster':
+        if  key.lower() == 'cluster':
             ClusScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'/clusters/'+ClusScope+'|resources.xml#builtin_mqprovider)"'
-        if  key.lower == 'node':
+        if  key.lower() == 'node':
             NodeScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'/nodes/'+Nodescope+'|resources.xml#builtin_mqprovider)"'
-        if  key.lower == 'cfName':
+        if  key.lower() == 'cfname':
             CFName = value
-        if  key.lower == 'qmname':
+        if  key.lower() == 'qmname':
             QMName = value
-        if  key.lower == 'cfjndi':
+        if  key.lower() == 'cfjndi':
             CFJNDI = value
-        if  key.lower == 'qmgrsvrconnchan':
+        if  key.lower() == 'qmgrsvrconnchan':
             qmgrsvrconnchan = value
-        if  key.lower == 'qmgrhost':
+        if  key.lower() == 'qmgrhost':
             qmgrHost = value
-        if  key.lower ==  'qmgrport':
+        if  key.lower() ==  'qmgrport':
             qmgrPortNumber = value
-        if  key.lower == 'connnamelist':
+        if  key.lower() == 'connnamelist':
             ConnNameList = value
-        if  key.lower == 'clchandeftaburl':
+        if  key.lower() == 'clchandeftaburl':
             ClChanDefTabURL = value
     if CFName or QMName  or CellScope or qmgrHost:
         print CellScope,ClusScope,CFName,QMName,CFJNDI,qmgrHost
