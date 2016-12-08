@@ -1,16 +1,16 @@
 import os
 import sys
-def createCF(ASName, QMName, qmgrSvrConnChan='', CFJNDI=''):    
-    if CFJNDI:
-        CFJNDI = 'jndi/'+ASName
-    if DSCR:
-        DSCR = ASName
+def createAS(ASName, QMName, DESC, destType, qmgrSvrConnChan='', ASJNDI=''):    
+    if ASJNDI:
+        ASJNDI = 'jndi/'+ASName
+    if DESC:
+        DESC = ASName
     if destType:
         destType = 'javax.jms.Queue'
     CF_cmd =  '[-name '+ASName
     CF_cmd+=  ' -jndiName '+ASJNDI
     if qmgrHost != '':
-        CF_cmd+=  ' -description '+DSCR
+        CF_cmd+=  ' -description '+DESC
         CF_cmd+=  ' -destinationJndiName '+destJNDI
         CF_cmd+=  ' -destinationType '+destType+' -messageSelector '
         CF_cmd+=  ' -qmgrName '+QMName
@@ -19,7 +19,7 @@ def createCF(ASName, QMName, qmgrSvrConnChan='', CFJNDI=''):
         CF_cmd+=  ' -qmgrPortNumber '+qmgrPortNumber
         CF_cmd+=  ' ]'
     elif ConnNameList != '':
-        CF_cmd+=  ' -description '+DSCR
+        CF_cmd+=  ' -description '+DESC
         CF_cmd+=  ' -destinationJndiName '+destJNDI
         CF_cmd+=  ' -destinationType '+destType+' -messageSelector '
         CF_cmd+=  ' -qmgrName '+QMName
@@ -36,52 +36,55 @@ def createCF(ASName, QMName, qmgrSvrConnChan='', CFJNDI=''):
     AdminConfig.save()
     # createCF Method Completed
 qmgrSvrConnChan = ''
-qmgrHost=''
-ConnNameList=''
-ClChanDefTabURL=''
+qmgrHost = ''
+ConnNameList = ''
+ClChanDefTabURL = ''
+DESC = ''
 args = sys.argv[0:]
 if len(args) >= 4 :
     for arg in args:
         key, value = arg.split('=')
-        if  key.lower == 'cell':
+        if  key.lower() == 'cell':
             CellScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'|resources.xml#builtin_mqprovider)"'
-        if  key.lower == 'cluster':
+        if  key.lower() == 'cluster':
             ClusScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'/clusters/'+ClusScope+'|resources.xml#builtin_mqprovider)"'
-        if  key.lower == 'node':
+        if  key.lower() == 'node':
             NodeScope = value
             Provider = '"WebSphere MQ JMS Provider(cells/'+CellScope+'/nodes/'+Nodescope+'|resources.xml#builtin_mqprovider)"'
-        if  key.lower == 'asname':
+        if  key.lower() == 'asname':
             ASName = value
-        if  'desttype' == key.lower:
+        if  'desttype' == key.lower():
             destType = value.lower()
             if destType == 'queue':
                 destType = 'javax.jms.Queue'
             elif  destType == 'topic':
                 destType = 'javax.jms.Topic'
-        if 'destjndi' == key.lower:
+        if 'desc' == key.lower():
+            DESC = value
+        if 'destjndi' == key.lower():
             destJNDI = value
-        if  key.lower == 'qmname':
+        if  key.lower() == 'qmname':
             QMName = value
-        if  key.lower == 'asjndi':
+        if  key.lower() == 'asjndi':
             ASJNDI = value
-        if  key.lower == 'qmgrsvrconnchan':
+        if  key.lower() == 'qmgrsvrconnchan':
             qmgrSvrConnChan = value
-        if  key.lower == 'qmgrhost':
+        if  key.lower() == 'qmgrhost':
             qmgrHost = value
-        if  key.lower ==  'qmgrport':
+        if  key.lower() ==  'qmgrport':
             qmgrPortNumber = value
-        if  key.lower == 'connnamelist':
+        if  key.lower() == 'connnamelist':
             ConnNameList = value
-        if  key.lower == 'clchandeftaburl':
+        if  key.lower() == 'clchandeftaburl':
             ClChanDefTabURL = value
     if ASName or QMName  or CellScope or qmgrHost:
         print CellScope,ClusScope,ASName,QMName,ASJNDI,qmgrHost
-        createCF(ASName, QMName ,qmgrSvrConnChan , ASJNDI) 
+        createAS(ASName, QMName, DESC, destType, qmgrSvrConnChan, ASJNDI) 
     else:
         print 'These variables should not be empty script ASName or QMName or ASJNDI or Cell(scope of WebSphere) '
         
 else:    
-    print 'Usage: scriptName cell=CellName (Node=name or Cluster=clusterName ) ASName=name  QMName=QM ASJNDI=JNDI destJNDI=JNDIdest desttype=queue qmgrSvrConnChan=CHANNEL.OUT (qmgrHost=HOST qmgrPort=1212 or ConnNameList=CHN1,CH2 or ClChanDefTabURL="http://"'   
+    print 'Usage: scriptName cell=CellName (Node=name or Cluster=clusterName ) ASName=name  QMName=QM ASJNDI=JNDI destJNDI=JNDIdest desttype=queue DESC=ADFSADFS qmgrSvrConnChan=CHANNEL.OUT (qmgrHost=HOST qmgrPort=1212 or ConnNameList=CHN1,CH2 or ClChanDefTabURL="http://"'   
          
