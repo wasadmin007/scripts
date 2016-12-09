@@ -18,12 +18,12 @@ function im_install_root(){
 		echo " $NOW This Installation  Triggered as root user"
                 if [[ ! `grep  $group /etc/group`  ]];then
                         NOW
-			echo " $NOW creating $group "
+						echo " $NOW creating $group "
                         groupadd -g $gid $group
                 fi
                 if  [[ ! `id $user` ]];then
                         NOW
-			echo " $NOW creating $user" 
+						echo " $NOW creating $user" 
                         useradd -c "$user" -u $uid  -m -g $group $user
                 fi
                 if [[ ! -f "$temp_log" ]];then
@@ -36,8 +36,8 @@ function im_install_root(){
         	fi
 	        if [[ -f "${im_install_loc}/eclipse/tools/imcl" ]];then
                         NOW
-			echo " $NOW Installation Manager Installed"
-                fi
+					echo " $NOW Installation Manager Installed"
+            fi
 }
 function  im_install_non_root(){
                 NOW
